@@ -1,0 +1,17 @@
+version: '3'
+services:
+  ev_db:
+    container_name: ev-dim
+    image: postgres:alpine
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=user
+    ports:
+      - '5432:5432'
+    mem_limit: 500M
+    volumes:
+      - after-dark-db:/var/lib/postgresql/data
+
+volumes:
+  after-dark-db:
+    external: true
