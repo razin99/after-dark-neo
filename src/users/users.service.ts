@@ -1,26 +1,42 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>
+  ) { }
 
-  findAll() {
-    return `This action returns all users`;
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    const count = await getConnection()
+      .createQueryBuilder()
+      .select('email')
+      .from(User, 'email')
+      .where('email = :email', { email: createUserInput.email })
+      .getCount();
+    if (count === 0) {
+      const newUser = this.usersRepository.create(createUserInput);
+      return this.usersRepository.save(newUser);
+    }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.usersRepository.findOne(id)
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  findAll() {
+    return this.usersRepository.find()
   }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
+
+  // update(id: number, updateUserInput: UpdateUserInput) {
+  //   return `This action updates a #${id} user`;
+  // }
 }
