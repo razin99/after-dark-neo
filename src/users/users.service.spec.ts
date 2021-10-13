@@ -1,8 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
+
+const MOCK_USERS: CreateUserInput[] = [
+  {
+    username: 'bobby',
+    email: 'yeetboi@gmail.com',
+    password: 'tekashi6Nine',
+  },
+  {
+    username: 'greg',
+    email: 'greg69@hotmail.com',
+    password: 'rockyou',
+  }
+]
 
 describe('UsersService', () => {
   let service: UsersService;
