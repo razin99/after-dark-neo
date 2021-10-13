@@ -26,7 +26,7 @@ describe('UsersService', () => {
     create: jest.fn((user: User) => ({ ...user, id: 1 })),
     findOne: jest.fn((id: number) => MOCK_USERS[id]),
     find: jest.fn(() => MOCK_USERS),
-    delete: jest.fn(),
+    delete: jest.fn((id: number) => ({ affected: (MOCK_USERS.length > id && id >= 0) ? 1 : 0 })),
     save: jest.fn(),
   })
 
@@ -78,6 +78,19 @@ describe('UsersService', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
+  it(`should call repository's delete`, async () => {
+    const spy = jest.spyOn(repository, 'delete');
+    const res = await service.remove(1);
+    expect(res).toBeDefined();
+    expect(res).toEqual(true);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it(`should call repository's delete but with invalid id`, async () => {
+    const spy = jest.spyOn(repository, 'delete');
+    const res = await service.remove(MOCK_USERS.length + 21);
+    expect(res).toBeDefined();
+    expect(res).toEqual(false);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });
