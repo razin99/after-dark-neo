@@ -53,13 +53,12 @@ describe('UsersService', () => {
   // TODO: complete testing
   // TODO: use jest-spy to ensure repo functions are called
 
-  it('should create', async () => {
-    const user = await service.create({
-      username: 'bobby_shmurda',
-      email: 'yeetboi@gmail.com',
-      password: 'tekashi6Nine',
-    });
-    expect(user.id).toBeDefined();
+  it(`should call repository's create`, async () => {
+    const spy = jest.spyOn(repository, 'create');
+    const user = await service.create(MOCK_USERS[0]);
+    expect(user).toBeDefined();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(MOCK_USERS[0]);
   });
 
   it('should find all', async () => {
