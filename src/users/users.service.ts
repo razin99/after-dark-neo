@@ -30,7 +30,9 @@ export class UsersService {
 
   async update(id: number, updateUserInput: UpdateUserInput) {
     const user = await this.findOne(id);
-    const updatedUser = { ...user, ...updateUserInput }
-    return this.usersRepository.save(updatedUser)
+    return this.usersRepository.save({
+      ...user,
+      ...updateUserInput
+    })
   }
 }
