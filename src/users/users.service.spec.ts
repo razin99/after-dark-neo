@@ -25,7 +25,7 @@ describe('UsersService', () => {
   const mockRepo = () => ({
     create: jest.fn((user: User) => ({ ...user, id: 1 })),
     findOne: jest.fn((id: number) => MOCK_USERS[id]),
-    find: jest.fn(),
+    find: jest.fn(() => MOCK_USERS),
     delete: jest.fn(),
     save: jest.fn(),
   })
@@ -68,5 +68,12 @@ describe('UsersService', () => {
     expect(user).toBeDefined()
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(id);
+  });
+
+  it(`should call repository's find`, async () => {
+    const spy = jest.spyOn(repository, 'find');
+    const user = await service.findAll()
+    expect(user).toBeDefined()
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
