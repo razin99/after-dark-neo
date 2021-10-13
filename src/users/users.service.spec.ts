@@ -72,8 +72,12 @@ describe('UsersService', () => {
 
   it(`should call repository's find`, async () => {
     const spy = jest.spyOn(repository, 'find');
-    const user = await service.findAll()
-    expect(user).toBeDefined()
+    const user = await service.findAll();
+    expect(user).toBeDefined();
+    expect(user.length).toEqual(MOCK_USERS.length);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });
