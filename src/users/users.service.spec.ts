@@ -61,8 +61,12 @@ describe('UsersService', () => {
     expect(spy).toHaveBeenCalledWith(MOCK_USERS[0]);
   });
 
-  it('should find all', async () => {
-    const user = await service.findOne(1)
-    expect(user.id).toEqual(1);
+  it(`should call repository's findOne`, async () => {
+    const spy = jest.spyOn(repository, 'findOne');
+    const id = 1
+    const user = await service.findOne(id)
+    expect(user).toBeDefined()
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(id);
   });
 });
