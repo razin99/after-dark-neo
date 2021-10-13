@@ -22,10 +22,12 @@ describe('UsersService', () => {
   let service: UsersService;
   let repository: Repository<User>;
 
-  // TODO: properly mockrepository
   const mockRepo = () => ({
-    create: jest.fn((id: number) => ({ id, username: 'bob' })),
-    findOne: jest.fn((id: number) => ({ id, username: 'bob' })),
+    create: jest.fn((user: User) => ({ ...user, id: 1 })),
+    findOne: jest.fn((id: number) => MOCK_USERS[id]),
+    find: jest.fn(),
+    delete: jest.fn(),
+    save: jest.fn(),
   })
 
   beforeEach(async () => {
@@ -45,6 +47,7 @@ describe('UsersService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(repository).toBeDefined();
   });
 
   // TODO: complete testing
