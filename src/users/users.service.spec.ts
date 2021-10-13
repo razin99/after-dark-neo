@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
@@ -27,7 +28,7 @@ describe('UsersService', () => {
     findOne: jest.fn((id: number) => MOCK_USERS[id]),
     find: jest.fn(() => MOCK_USERS),
     delete: jest.fn((id: number) => ({ affected: (MOCK_USERS.length > id && id >= 0) ? 1 : 0 })),
-    save: jest.fn(),
+    save: jest.fn((updated: User) => ({ ...updated })),
   })
 
   beforeEach(async () => {
@@ -91,6 +92,17 @@ describe('UsersService', () => {
     const res = await service.remove(MOCK_USERS.length + 21);
     expect(res).toBeDefined();
     expect(res).toEqual(false);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it(`should call repository's save`, async () => {
+    const spy = jest.spyOn(repository, 'save');
+    const update: UpdateUserInput = {
+      username: 'new_name_who_dis'
+    }
+    const user = await service.update(1, update);
+    expect(user).toBeDefined();
+    expect(user.username).toEqual(update.username);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });
