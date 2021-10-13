@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -36,7 +37,9 @@ export class UsersService {
     return this.usersRepository.delete(id)
   }
 
-  // update(id: number, updateUserInput: UpdateUserInput) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const user = await this.findOne(id);
+    const updatedUser = { ...user, ...updateUserInput }
+    return this.usersRepository.save(updatedUser)
+  }
 }
