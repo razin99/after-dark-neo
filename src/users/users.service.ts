@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -13,16 +13,7 @@ export class UsersService {
   ) { }
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    const count = await getConnection()
-      .createQueryBuilder()
-      .select('email')
-      .from(User, 'email')
-      .where('email = :email', { email: createUserInput.email })
-      .getCount();
-    if (count === 0) {
-      const newUser = this.usersRepository.create(createUserInput);
-      return this.usersRepository.save(newUser);
-    }
+    return this.usersRepository.create(createUserInput)
   }
 
   findOne(id: number) {
