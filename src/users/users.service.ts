@@ -16,7 +16,7 @@ export class UsersService {
     return this.usersRepository.create(createUserInput);
   }
 
-  findOne(id: number) {
+  findOneById(id: number) {
     return this.usersRepository.findOne(id);
   }
 
@@ -30,7 +30,7 @@ export class UsersService {
   }
 
   async update(id: number, updateUserInput: UpdateUserInput) {
-    const user = await this.findOne(id);
+    const user = await this.findOneById(id);
     return this.usersRepository.save({
       ...user,
       ...updateUserInput,
