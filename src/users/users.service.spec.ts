@@ -64,7 +64,7 @@ describe('UsersService', () => {
   it(`should call repository's findOne`, async () => {
     const spy = jest.spyOn(repository, 'findOne');
     const id = 1;
-    const user = await service.findOne(id);
+    const user = await service.findOneById(id);
     expect(user).toBeDefined();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(id);
