@@ -53,9 +53,6 @@ describe('UsersService', () => {
     expect(repository).toBeDefined();
   });
 
-  // TODO: complete testing
-  // TODO: use jest-spy to ensure repo functions are called
-
   it(`should call repository's create`, async () => {
     const spy = jest.spyOn(repository, 'create');
     const user = await service.create(MOCK_USERS[0]);
