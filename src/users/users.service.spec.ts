@@ -16,8 +16,8 @@ const MOCK_USERS: CreateUserInput[] = [
     username: 'greg',
     email: 'greg69@hotmail.com',
     password: 'rockyou',
-  }
-]
+  },
+];
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -27,9 +27,11 @@ describe('UsersService', () => {
     create: jest.fn((user: User) => ({ ...user, id: 1 })),
     findOne: jest.fn((id: number) => MOCK_USERS[id]),
     find: jest.fn(() => MOCK_USERS),
-    delete: jest.fn((id: number) => ({ affected: (MOCK_USERS.length > id && id >= 0) ? 1 : 0 })),
+    delete: jest.fn((id: number) => ({
+      affected: MOCK_USERS.length > id && id >= 0 ? 1 : 0,
+    })),
     save: jest.fn((updated: User) => ({ ...updated })),
-  })
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,7 +45,7 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    repository = module.get(getRepositoryToken(User))
+    repository = module.get(getRepositoryToken(User));
   });
 
   it('should be defined', () => {
@@ -64,9 +66,9 @@ describe('UsersService', () => {
 
   it(`should call repository's findOne`, async () => {
     const spy = jest.spyOn(repository, 'findOne');
-    const id = 1
-    const user = await service.findOne(id)
-    expect(user).toBeDefined()
+    const id = 1;
+    const user = await service.findOne(id);
+    expect(user).toBeDefined();
     expect(spy).toHaveBeenCalledTimes(1);
     expect(spy).toHaveBeenCalledWith(id);
   });
@@ -98,8 +100,8 @@ describe('UsersService', () => {
   it(`should call repository's save`, async () => {
     const spy = jest.spyOn(repository, 'save');
     const update: UpdateUserInput = {
-      username: 'new_name_who_dis'
-    }
+      username: 'new_name_who_dis',
+    };
     const user = await service.update(1, update);
     expect(user).toBeDefined();
     expect(user.username).toEqual(update.username);

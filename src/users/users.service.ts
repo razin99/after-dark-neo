@@ -9,31 +9,31 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
-  ) { }
+    private usersRepository: Repository<User>,
+  ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    return this.usersRepository.create(createUserInput)
+    return this.usersRepository.create(createUserInput);
   }
 
   findOne(id: number) {
-    return this.usersRepository.findOne(id)
+    return this.usersRepository.findOne(id);
   }
 
   findAll() {
-    return this.usersRepository.find()
+    return this.usersRepository.find();
   }
 
   async remove(id: number) {
-    const res = await this.usersRepository.delete(id)
-    return res.affected === 1
+    const res = await this.usersRepository.delete(id);
+    return res.affected === 1;
   }
 
   async update(id: number, updateUserInput: UpdateUserInput) {
     const user = await this.findOne(id);
     return this.usersRepository.save({
       ...user,
-      ...updateUserInput
-    })
+      ...updateUserInput,
+    });
   }
 }

@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [UsersResolver, UsersService],
   imports: [TypeOrmModule.forFeature([User])],
 })
-export class UsersModule { }
+export class UsersModule {}
 
 // TODO: integrate with passport js: add 'sessions'
 // TODO: protect resolvers: getting all users only shows usernames and ids
