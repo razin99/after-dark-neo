@@ -4,11 +4,12 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { GraphqlModule } from './graphql/graphql.module';
+import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, GraphqlModule],
+  imports: [DatabaseModule, UsersModule, GraphqlModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, AuthService],
 })
-export class AppModule { }
+export class AppModule {}
