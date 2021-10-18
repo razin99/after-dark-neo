@@ -13,7 +13,8 @@ export class UsersService {
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
-    return this.usersRepository.create(createUserInput);
+    const user: User = this.usersRepository.create(createUserInput);
+    return await this.usersRepository.save(user);
   }
 
   findOneById(id: number) {
