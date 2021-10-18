@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -21,5 +22,9 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  login(user: Omit<User, 'password'>) {
+    return Buffer.from(JSON.stringify(user)).toString('base64');
   }
 }
