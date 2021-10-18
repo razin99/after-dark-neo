@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Exclude } from 'class-transformer';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
@@ -16,6 +17,7 @@ export class User {
   @Column()
   public username: string;
 
+  @Exclude()
   @Field(() => String)
   @Column()
   public password: string;
