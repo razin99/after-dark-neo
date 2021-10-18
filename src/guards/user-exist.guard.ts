@@ -20,7 +20,8 @@ export class UserExistGuard implements CanActivate {
 
   /**
    * @param email to check
-   * @returns true if found user with given email, false otherwise
+   * @returns true if found user with given email
+   * @raises ForbiddenException if user exists
    */
   async checkEmail(email: string) {
     const user = await this.usersService.findOneByEmail(email);
