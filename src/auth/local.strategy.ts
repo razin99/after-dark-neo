@@ -20,7 +20,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       user = await this.authService.validateWithUsername(token, password);
     }
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid credential');
     }
     return user;
   }
