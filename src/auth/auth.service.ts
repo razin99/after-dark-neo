@@ -41,6 +41,7 @@ export class AuthService {
    * @returns valid session token
    */
   async register(createUserInput: CreateUserInput) {
-    return await this.usersService.create(createUserInput);
+    const user = await this.usersService.create(createUserInput);
+    return this.login(user);
   }
 }
