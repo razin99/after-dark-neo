@@ -30,6 +30,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "apollo-server-core": "^3.4.0",
     "apollo-server-express": "^3.4.0",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "graphql": "^15.6.1",
     "passport": "^0.4.1",
