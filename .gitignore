@@ -11,6 +11,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+# Auto-generated gql schema
+schema.gql
+
 # Env files
 .env*
 
