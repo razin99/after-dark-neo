@@ -6,9 +6,10 @@ import { UsersModule } from './users/users.module';
 import { GraphqlModule } from './graphql/graphql.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
-  imports: [DatabaseModule, UsersModule, GraphqlModule, AuthModule],
+  imports: [DatabaseModule, UsersModule, GraphqlModule, AuthModule, PostsModule],
   controllers: [AppController],
   providers: [AppService, AuthService],
 })
