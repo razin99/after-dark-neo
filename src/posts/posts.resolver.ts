@@ -24,7 +24,7 @@ export class PostsResolver {
   }
 
   @Query(() => [Post], { name: 'postsByUser' })
-  findAllByUser(userId: number) {
+  findAllByUser(@Args('userId', { type: () => Int }) userId: number) {
     return this.postsService.findAllByUser(userId);
   }
 
