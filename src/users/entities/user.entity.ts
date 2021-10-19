@@ -18,7 +18,6 @@ export class User {
   public username: string;
 
   @Exclude()
-  @Field(() => String)
   @Column()
   public password: string;
 }
