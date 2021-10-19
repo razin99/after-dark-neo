@@ -42,13 +42,25 @@ export class PostsResolver {
 
   @UseGuards(AuthenticatedGuard)
   @Mutation(() => Post)
-  updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
+  async updatePost(
+    @Args('updatePostInput') updatePostInput: UpdatePostInput,
+    @GetUser() user: User,
+  ) {
+    const post = await this.findOne(updatePostInput.id);
+    if (!post) throw new NotFoundException();
+    if (post.author.id !== user.id) throw new UnauthorizedException();
     return this.postsService.update(updatePostInput.id, updatePostInput);
   }
 
   @UseGuards(AuthenticatedGuard)
   @Mutation(() => Boolean)
-  removePost(@Args('id', { type: () => Int }) id: number) {
+  async removePost(
+    @Args('id', { type: () => Int }) id: number,
+    @GetUser() user: User,
+  ) {
+    const post = await this.postsService.findOneById(id);
+    if (!post) throw new NotFoundException();
+    if (post.author.id !== user.id) throw new UnauthorizedException();
     return this.postsService.remove(id);
   }
 }
