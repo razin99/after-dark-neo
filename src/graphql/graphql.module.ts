@@ -9,7 +9,8 @@ import { join } from 'path/posix';
  */
 const graphQLFormattedErr = (error: GraphQLError) => ({
   message: error.extensions?.exception?.response?.message || error.message,
-  code: error.extensions?.response?.statusCode || '911',
+  // Error code reference: apollographql.com/docs/apollo-server/data/errors/#error-codes
+  code: error.extensions?.code || '911',
   name: error.extensions?.exception?.name || error.name,
 });
 
