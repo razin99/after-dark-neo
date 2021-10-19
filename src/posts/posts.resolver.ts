@@ -5,11 +5,18 @@ import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { GetUser } from 'src/decorators/user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import {
+  NotFoundException,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthenticatedGuard } from 'src/guards/authenticated.guard';
 
 @Resolver(() => Post)
 export class PostsResolver {
   constructor(private readonly postsService: PostsService) {}
 
+  @UseGuards(AuthenticatedGuard)
   @Mutation(() => Post)
   createPost(
     @Args('createPostInput') createPostInput: CreatePostInput,
@@ -33,11 +40,13 @@ export class PostsResolver {
     return this.postsService.findOneById(id);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Mutation(() => Post)
   updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
     return this.postsService.update(updatePostInput.id, updatePostInput);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Mutation(() => Boolean)
   removePost(@Args('id', { type: () => Int }) id: number) {
     return this.postsService.remove(id);
