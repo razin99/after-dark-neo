@@ -28,11 +28,16 @@ export class PostsService {
   }
 
   findAllByUser(userId: number) {
-    return this.postsRepository.find({ where: { user: { id: userId } } });
+    return this.postsRepository.find({
+      relations: ['author'], // Post.author === User
+      where: { author: { id: userId } },
+    });
   }
 
   findOneById(id: number) {
-    return this.postsRepository.findOne(id);
+    return this.postsRepository.findOne(id, {
+      relations: ['author'], // Post.author === User
+    });
   }
 
   async update(id: number, updatePostInput: UpdatePostInput) {
