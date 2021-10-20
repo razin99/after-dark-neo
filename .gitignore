@@ -20,6 +20,9 @@ documentation
 # Env files
 .env*
 
+# gcloud yaml
+app.yaml
+
 # OS
 .DS_Store
 
