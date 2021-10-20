@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
-import { join } from 'path/posix';
+import { join } from 'path';
 
 /**
  * Format GQL errors
