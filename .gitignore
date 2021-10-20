@@ -14,6 +14,9 @@ lerna-debug.log*
 # Auto-generated gql schema
 schema.gql
 
+# Auto-generated documentation from compodoc
+documentation
+
 # Env files
 .env*
 
