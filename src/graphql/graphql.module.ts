@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
 import { join } from 'path/posix';
@@ -16,14 +17,16 @@ const graphQLFormattedErr = (error: GraphQLError) => ({
 
 @Module({
   imports: [
-    GraphQLModule.forRoot({
-      debug: true,
-      playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      formatError: graphQLFormattedErr,
+    GraphQLModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (conf: ConfigService) => ({
+        debug: conf.get('NODE_ENV') === 'development',
+        playground: conf.get('NODE_ENV') === 'development',
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        formatError: graphQLFormattedErr,
+      }),
     }),
   ],
 })
 export class GraphqlModule {}
-
-// TODO: turn off playground and debug on prod
