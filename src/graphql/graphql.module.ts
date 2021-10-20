@@ -23,7 +23,10 @@ const graphQLFormattedErr = (error: GraphQLError) => ({
       useFactory: (conf: ConfigService) => ({
         debug: conf.get('NODE_ENV') === 'development',
         playground: conf.get('NODE_ENV') === 'development',
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        autoSchemaFile:
+          conf.get('NODE_ENV') === 'development'
+            ? join(process.cwd(), 'src/schema.gql')
+            : true,
         formatError: graphQLFormattedErr,
       }),
     }),
