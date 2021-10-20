@@ -29,6 +29,6 @@ export class Post {
   updated_at: Date;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User, (user) => user.posts, { onDelete: 'CASCADE' })
   author: User;
 }

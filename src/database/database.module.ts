@@ -12,9 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: 'afterdark',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
-    })
-  ]
+    }),
+  ],
 })
-export class DatabaseModule { }
-
-// TODO: use ConfigModule and ConfigService to load configs from .env file
+export class DatabaseModule {}

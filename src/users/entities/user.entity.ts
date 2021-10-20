@@ -22,6 +22,6 @@ export class User {
   @Column()
   public password: string;
 
-  @OneToMany(() => Post, (post) => post.author)
+  @OneToMany(() => Post, (post) => post.author, { onDelete: 'CASCADE' })
   posts: Post[];
 }
