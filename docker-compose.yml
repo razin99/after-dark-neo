@@ -4,17 +4,17 @@ services:
     container_name: ev-dim
     image: postgres:alpine
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=user
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     mem_limit: 500M
     volumes:
       - after-dark-db:/var/lib/postgresql/data
   redis:
     image: 'redis:alpine'
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:${REDIS_PORT}'
 
 volumes:
   after-dark-db:
