@@ -26,6 +26,9 @@ import * as Joi from 'joi';
         NODE_ENV: Joi.string()
           .valid('development', 'production')
           .default('development'),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
+        SESSION_SECRET: Joi.string().required(),
       }),
       validationOptions: {
         abortEarly: true,
