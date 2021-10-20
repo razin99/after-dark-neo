@@ -10,15 +10,14 @@ import * as createRedisStore from 'connect-redis';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log(`Serving app at: localhost:3000`);
+  const conf = app.get(ConfigService);
+
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: classValidatorMessage,
       transform: true,
     }),
   );
-
-  const conf = app.get(ConfigService);
 
   const RedisStore = createRedisStore(session);
   const redisClient = createClient({
@@ -37,6 +36,9 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  await app.listen(3000);
+  console.log(
+    `Serving app at: ${conf.get('BACKEND_HOST')}:${conf.get('BACKEND_PORT')}`,
+  );
+  await app.listen(conf.get('BACKEND_PORT'));
 }
 bootstrap();

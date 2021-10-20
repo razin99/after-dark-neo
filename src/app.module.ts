@@ -29,6 +29,8 @@ import * as Joi from 'joi';
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
         SESSION_SECRET: Joi.string().required(),
+        BACKEND_HOST: Joi.string().required(),
+        BACKEND_PORT: Joi.number().required(),
       }),
       validationOptions: {
         abortEarly: true,
