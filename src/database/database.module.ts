@@ -15,7 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: conf.get('POSTGRES_PASSWORD'),
         database: 'afterdark',
         entities: ['dist/**/*.entity{.ts,.js}'],
-        synchronize: conf.get('NODE_ENV') === 'development',
+        synchronize: true,
       }),
     }),
   ],
