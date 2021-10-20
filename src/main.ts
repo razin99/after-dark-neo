@@ -25,6 +25,10 @@ async function bootstrap() {
     secret: conf.get('SESSION_SECRET'),
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: conf.get('NODE_ENV') === 'production',
+    },
   };
 
   if (conf.get('NODE_ENV') === 'development') {
