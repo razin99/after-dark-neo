@@ -1,6 +1,6 @@
 import { User } from '../entities/user.entity';
 
-export const allUsers: User[] = [
+export let allUsers: User[] = [
   {
     id: 1,
     username: 'bobby',
@@ -33,5 +33,8 @@ export const userRepositoryFactory = () => ({
   delete: jest.fn((id: number) => ({
     affected: allUsers.length > id && id >= 0 ? 1 : 0,
   })),
-  save: jest.fn((updated: User) => ({ ...updated })),
+  save: jest.fn((user: User) => {
+    allUsers.push(user);
+    return user;
+  }),
 });
