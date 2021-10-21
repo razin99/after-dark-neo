@@ -18,7 +18,7 @@ export const allUsers: User[] = [
 ];
 
 export const userRepositoryFactory = () => ({
-  create: jest.fn((user: User) => ({ ...user, id: 1 })),
+  create: jest.fn((user: User) => ({ ...user, id: allUsers.length + 1 })),
   findOne: jest.fn(
     (token: number | { where: { username?: string; email?: string } }) =>
       typeof token === 'number'
