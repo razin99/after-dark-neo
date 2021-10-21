@@ -19,7 +19,16 @@ export const allUsers: User[] = [
 
 export const userRepositoryFactory = () => ({
   create: jest.fn((user: User) => ({ ...user, id: 1 })),
-  findOne: jest.fn((id: number) => allUsers.find((user) => user.id === id)),
+  findOne: jest.fn(
+    (token: number | { where: { username?: string; email?: string } }) =>
+      typeof token === 'number'
+        ? allUsers.find((user) => user.id === token)
+        : allUsers.find(
+            (user) =>
+              user.username === token.where?.username ||
+              user.email === token.where?.email,
+          ),
+  ),
   find: jest.fn(() => allUsers),
   delete: jest.fn((id: number) => ({
     affected: allUsers.length > id && id >= 0 ? 1 : 0,
