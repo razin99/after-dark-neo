@@ -57,4 +57,14 @@ describe('AuthService', () => {
       await service.validateWithEmail(user.email, `--${user.password}--`),
     ).toEqual(null);
   });
+
+  it(`should register new user`, async () => {
+    expect(
+      await service.register({
+        email: 'heelloo@gmail.com',
+        username: 'not_a_user',
+        password: '123__yeet__321',
+      }),
+    ).toBeDefined();
+  });
 });
