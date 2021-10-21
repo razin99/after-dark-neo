@@ -5,9 +5,10 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 import { SessionSerializer } from './session.serializer';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [UsersModule, PassportModule],
+  imports: [UsersModule, PassportModule, ConfigModule],
   providers: [AuthService, LocalStrategy, SessionSerializer],
   controllers: [AuthController],
 })
