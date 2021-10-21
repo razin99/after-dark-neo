@@ -1,37 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
+import { userRepositoryFactory, allUsers } from './mocks/users.repository';
 import { UsersService } from './users.service';
-
-const MOCK_USERS: CreateUserInput[] = [
-  {
-    username: 'bobby',
-    email: 'yeetboi@gmail.com',
-    password: 'tekashi6Nine',
-  },
-  {
-    username: 'greg',
-    email: 'greg69@hotmail.com',
-    password: 'rockyou',
-  },
-];
 
 describe('UsersService', () => {
   let service: UsersService;
   let repository: Repository<User>;
-
-  const mockRepo = () => ({
-    create: jest.fn((user: User) => ({ ...user, id: 1 })),
-    findOne: jest.fn((id: number) => MOCK_USERS[id]),
-    find: jest.fn(() => MOCK_USERS),
-    delete: jest.fn((id: number) => ({
-      affected: MOCK_USERS.length > id && id >= 0 ? 1 : 0,
-    })),
-    save: jest.fn((updated: User) => ({ ...updated })),
-  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,7 +16,7 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useFactory: mockRepo,
+          useFactory: userRepositoryFactory,
         },
       ],
     }).compile();
@@ -55,10 +32,10 @@ describe('UsersService', () => {
 
   it(`should call repository's create`, async () => {
     const spy = jest.spyOn(repository, 'create');
-    const user = await service.create(MOCK_USERS[0]);
+    const user = await service.create(allUsers[0]);
     expect(user).toBeDefined();
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(MOCK_USERS[0]);
+    expect(spy).toHaveBeenCalledWith(allUsers[0]);
   });
 
   it(`should call repository's findOne`, async () => {
@@ -74,7 +51,7 @@ describe('UsersService', () => {
     const spy = jest.spyOn(repository, 'find');
     const user = await service.findAll();
     expect(user).toBeDefined();
-    expect(user.length).toEqual(MOCK_USERS.length);
+    expect(user.length).toEqual(allUsers.length);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
@@ -88,7 +65,7 @@ describe('UsersService', () => {
 
   it(`should call repository's delete but with invalid id`, async () => {
     const spy = jest.spyOn(repository, 'delete');
-    const res = await service.remove(MOCK_USERS.length + 21);
+    const res = await service.remove(allUsers.length + 21);
     expect(res).toBeDefined();
     expect(res).toEqual(false);
     expect(spy).toHaveBeenCalledTimes(1);
