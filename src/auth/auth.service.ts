@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from 'src/users/dto/create-user.input';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async validateWithUsername(username: string, password: string) {
+  /**
+   * Validate user with username and password
+   * @returns a valid user on success, null otherwise
+   */
+  async validateWithUsername(
+    username: string,
+    password: string,
+  ): Promise<User | null> {
     const user = await this.usersService.findOneByUsername(username);
     if (user && user.password === password) {
       return user;
@@ -14,7 +22,14 @@ export class AuthService {
     return null;
   }
 
-  async validateWithEmail(email: string, password: string) {
+  /**
+   * Validate user with email and password
+   * @returns a valid user on success, null otherwise
+   */
+  async validateWithEmail(
+    email: string,
+    password: string,
+  ): Promise<User | null> {
     const user = await this.usersService.findOneByEmail(email);
     if (user && user.password === password) {
       return user;
