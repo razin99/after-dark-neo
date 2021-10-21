@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
@@ -7,6 +8,7 @@ import {
 } from 'src/users/mocks/users.repository';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -20,10 +22,14 @@ describe('AuthService', () => {
           provide: getRepositoryToken(User),
           useFactory: userRepositoryFactory,
         },
+        ConfigService,
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+
+    // use password as plaintext instead of bcrypt hashes
+    process.env.NODE_ENV = 'development';
   });
 
   it('should be defined', () => {
@@ -66,5 +72,19 @@ describe('AuthService', () => {
         password: '123__yeet__321',
       }),
     ).toBeDefined();
+  });
+
+  it(`should register new user with hashed password`, async () => {
+    process.env.NODE_ENV = 'production';
+    const password = '123__yeet__321';
+    const user = await service.register({
+      email: 'fitawh@levram.me',
+      username: 'who_dis',
+      password,
+    });
+    expect(await bcrypt.compare(password, user.password)).toBeTruthy();
+    expect(await service.validateWithUsername(user.username, password)).toEqual(
+      user,
+    );
   });
 });
