@@ -12,33 +12,68 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  /**
+   * Create a user and return it
+   * @param createUserInput required information to create a user
+   * @returns the created user on success
+   */
   async create(createUserInput: CreateUserInput): Promise<User> {
     const user: User = this.usersRepository.create(createUserInput);
     return await this.usersRepository.save(user);
   }
 
-  findOneById(id: number) {
+  /**
+   * Find a user by their id
+   * @param id to lookup
+   * @returns user on success
+   */
+  findOneById(id: number): Promise<User> {
     return this.usersRepository.findOne(id);
   }
 
-  findOneByEmail(email: string) {
+  /**
+   * Find a user by their email
+   * @param email to lookup
+   * @returns user on success
+   */
+  findOneByEmail(email: string): Promise<User> {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  findOneByUsername(username: string) {
+  /**
+   * Find a user by their username
+   * @param username to lookup
+   * @returns user on success
+   */
+  findOneByUsername(username: string): Promise<User> {
     return this.usersRepository.findOne({ where: { username } });
   }
 
-  findAll() {
+  /**
+   * Get all users
+   * @returns all users exists
+   */
+  findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  async remove(id: number) {
+  /**
+   * Remove a user with given id
+   * @param id to be removed
+   * @returns true if successfully removed
+   */
+  async remove(id: number): Promise<boolean> {
     const res = await this.usersRepository.delete(id);
     return res.affected === 1;
   }
 
-  async update(id: number, updateUserInput: UpdateUserInput) {
+  /**
+   * Update user with given id
+   * @param id of user to update
+   * @param updateUserInput information to update
+   * @retuns the update user
+   */
+  async update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
     const user = await this.findOneById(id);
     return this.usersRepository.save({
       ...user,
