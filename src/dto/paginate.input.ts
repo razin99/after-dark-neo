@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { NonNegativeIntResolver } from 'graphql-scalars';
 
 @InputType()
-export class PaginateUserInput {
+export class PaginateInput {
   @Field(() => NonNegativeIntResolver)
   skip: number;
 
