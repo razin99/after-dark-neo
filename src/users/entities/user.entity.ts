@@ -10,7 +10,6 @@ export class User {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Field(() => String)
   @Column({ unique: true })
   public email: string;
 

@@ -60,6 +60,9 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Get('verify')
   check(@Req() req: any) {
-    return { message: `You are authenticated as ${req.user.email}` };
+    return {
+      message: `You are authenticated as ${req.user.email}`,
+      user: req.user,
+    };
   }
 }
