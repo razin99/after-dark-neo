@@ -1,10 +1,5 @@
-import { Field, InputType, registerEnumType } from '@nestjs/graphql';
-
-enum SortEnum {
-  ASCENDING = 'ASC',
-  DESCENDING = 'DESC',
-}
-registerEnumType(SortEnum, { name: 'SortEnum' });
+import { Field, InputType } from '@nestjs/graphql';
+import { SortEnum } from 'src/dto/sort.enum';
 
 @InputType()
 export class SortPostInput {
