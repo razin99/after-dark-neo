@@ -5,7 +5,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/guards/authenticated.guard';
 import { GetUser } from 'src/decorators/user.decorator';
-import { PaginateUserInput } from './dto/paginate-user.input';
+import { PaginateInput } from 'src/dto/paginate.input';
 import { SortUserInput } from './dto/sort-user.input';
 
 @Resolver(() => User)
@@ -15,8 +15,8 @@ export class UsersResolver {
 
   @Query(() => [User], { name: 'users' })
   findAll(
-    @Args('paginate', { type: () => PaginateUserInput, nullable: true })
-    paginate?: PaginateUserInput,
+    @Args('paginate', { type: () => PaginateInput, nullable: true })
+    paginate?: PaginateInput,
     @Args('sort', { type: () => SortUserInput, nullable: true })
     sort?: SortUserInput,
   ) {

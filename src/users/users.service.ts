@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
-import { PaginateUserInput } from './dto/paginate-user.input';
+import { PaginateInput } from 'src/dto/paginate.input';
 import { SortUserInput } from './dto/sort-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -55,7 +55,7 @@ export class UsersService {
    * Get all users
    * @returns all users exists
    */
-  findAll(paginate?: PaginateUserInput, sort?: SortUserInput): Promise<User[]> {
+  findAll(paginate?: PaginateInput, sort?: SortUserInput): Promise<User[]> {
     return this.usersRepository.find({
       skip: paginate?.skip || 0,
       take: paginate?.take || 10,
