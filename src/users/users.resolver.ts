@@ -5,6 +5,8 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/guards/authenticated.guard';
 import { GetUser } from 'src/decorators/user.decorator';
+import { PaginateUserInput } from './dto/paginate-user.input';
+import { SortUserInput } from './dto/sort-user.input';
 
 @Resolver(() => User)
 @UseGuards(AuthenticatedGuard)
@@ -12,8 +14,13 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.usersService.findAll();
+  findAll(
+    @Args('paginate', { type: () => PaginateUserInput, nullable: true })
+    paginate?: PaginateUserInput,
+    @Args('sort', { type: () => SortUserInput, nullable: true })
+    sort?: SortUserInput,
+  ) {
+    return this.usersService.findAll(paginate, sort);
   }
 
   @Query(() => User, { name: 'user' })
