@@ -11,6 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/guards/authenticated.guard';
+import { PaginateInput } from 'src/dto/paginate.input';
+import { SortPostInput } from './dto/sort-post.input';
 
 @Resolver(() => Post)
 export class PostsResolver {
@@ -26,13 +28,24 @@ export class PostsResolver {
   }
 
   @Query(() => [Post], { name: 'posts' })
-  findAll() {
-    return this.postsService.findAll();
+  findAll(
+    @Args('paginate', { type: () => PaginateInput, nullable: true })
+    paginate?: PaginateInput,
+    @Args('sort', { type: () => SortPostInput, nullable: true })
+    sort?: SortPostInput,
+  ) {
+    return this.postsService.findAll(paginate, sort);
   }
 
   @Query(() => [Post], { name: 'postsByUser' })
-  findAllByUser(@Args('userId', { type: () => Int }) userId: number) {
-    return this.postsService.findAllByUser(userId);
+  findAllByUser(
+    @Args('userId', { type: () => Int }) userId: number,
+    @Args('paginate', { type: () => PaginateInput, nullable: true })
+    paginate?: PaginateInput,
+    @Args('sort', { type: () => SortPostInput, nullable: true })
+    sort?: SortPostInput,
+  ) {
+    return this.postsService.findAllByUser(userId, paginate, sort);
   }
 
   @Query(() => Post, { name: 'post' })

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateInput } from 'src/dto/paginate.input';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreatePostInput } from './dto/create-post.input';
+import { SortPostInput } from './dto/sort-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
 
@@ -21,16 +23,32 @@ export class PostsService {
     return this.postsRepository.save(post);
   }
 
-  findAll() {
+  findAll(paginate?: PaginateInput, sort?: SortPostInput) {
     return this.postsRepository.find({
       relations: ['author'], // Post.author === User
+      skip: paginate?.skip || 0,
+      take: paginate?.take || 10,
+      order: {
+        created_at: sort?.created_at,
+        updated_at: sort?.updated_at,
+      },
     });
   }
 
-  findAllByUser(userId: number) {
+  findAllByUser(
+    userId: number,
+    paginate?: PaginateInput,
+    sort?: SortPostInput,
+  ) {
     return this.postsRepository.find({
       relations: ['author'], // Post.author === User
       where: { author: { id: userId } },
+      skip: paginate?.skip || 0,
+      take: paginate?.take || 10,
+      order: {
+        created_at: sort?.created_at,
+        updated_at: sort?.updated_at,
+      },
     });
   }
 
