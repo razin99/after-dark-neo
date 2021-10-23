@@ -55,8 +55,7 @@ export class AuthService {
   async register(createUserInput: CreateUserInput) {
     if (this.conf.get<string>('NODE_ENV') === 'production')
       createUserInput.password = await bcrypt.hash(createUserInput.password, 5);
-    const user = await this.usersService.create(createUserInput);
-    return user;
+    return await this.usersService.create(createUserInput);
   }
 
   private async matchPassword(
