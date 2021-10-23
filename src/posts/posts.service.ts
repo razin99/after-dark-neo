@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Timestamp } from '@google-cloud/firestore';
+import { Inject, Injectable } from '@nestjs/common';
+import { BaseFirestoreRepository } from 'fireorm';
 import { PaginateInput } from 'src/dto/paginate.input';
 import { User } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
 import { CreatePostInput } from './dto/create-post.input';
 import { SortPostInput } from './dto/sort-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
@@ -11,63 +11,64 @@ import { Post } from './entities/post.entity';
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private postsRepository: Repository<Post>,
+    @Inject('POST')
+    private postsRepository: BaseFirestoreRepository<Post>,
   ) {}
 
-  async create(createPostInput: CreatePostInput, user: User) {
-    const post: Post = this.postsRepository.create({
+  create(createPostInput: CreatePostInput, user: User) {
+    const current_time = Timestamp.now();
+    return user.posts.create({
       ...createPostInput,
-      author: user,
+      created_at: current_time,
+      updated_at: current_time,
     });
-    return this.postsRepository.save(post);
   }
 
   findAll(paginate?: PaginateInput, sort?: SortPostInput) {
-    return this.postsRepository.find({
-      relations: ['author'], // Post.author === User
-      skip: paginate?.skip || 0,
-      take: paginate?.take || 10,
-      order: {
-        created_at: sort?.created_at,
-        updated_at: sort?.updated_at,
-      },
-    });
+    return this.postsRepository
+      .customQuery(async (query, _) => {
+        let q = query;
+        if (sort?.created_at) q = q.orderBy('created_at', sort.created_at);
+        if (sort?.updated_at) q = q.orderBy('username', sort.updated_at);
+        if (paginate?.skip) q = q.offset(paginate.skip);
+        if (paginate?.take) q = q.limit(paginate.take);
+        return q;
+      })
+      .find();
   }
 
   findAllByUser(
-    userId: number,
+    userId: string,
     paginate?: PaginateInput,
     sort?: SortPostInput,
   ) {
-    return this.postsRepository.find({
-      relations: ['author'], // Post.author === User
-      where: { author: { id: userId } },
-      skip: paginate?.skip || 0,
-      take: paginate?.take || 10,
-      order: {
-        created_at: sort?.created_at,
-        updated_at: sort?.updated_at,
-      },
-    });
+    return this.postsRepository
+      .customQuery(async (query, ref) => {
+        let q = query;
+        q.where(ref.parent.id, '==', userId);
+        if (sort?.created_at) q = q.orderBy('created_at', sort.created_at);
+        if (sort?.updated_at) q = q.orderBy('username', sort.updated_at);
+        if (paginate?.skip) q = q.offset(paginate.skip);
+        if (paginate?.take) q = q.limit(paginate.take);
+        return q;
+      })
+      .find();
   }
 
-  findOneById(id: number) {
-    return this.postsRepository.findOne(id, {
-      relations: ['author'], // Post.author === User
-    });
+  findOneById(id: string) {
+    return this.postsRepository.findById(id);
   }
 
-  async update(id: number, updatePostInput: UpdatePostInput) {
+  async update(id: string, updatePostInput: UpdatePostInput) {
     const post = await this.findOneById(id);
-    return this.postsRepository.save({
+    return this.postsRepository.update({
       ...post,
       ...updatePostInput,
     });
   }
 
-  async remove(id: number) {
-    const res = await this.postsRepository.delete(id);
-    return res.affected === 1;
+  async remove(id: string) {
+    await this.postsRepository.delete(id);
+    return !(await this.postsRepository.findById(id));
   }
 }

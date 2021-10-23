@@ -39,7 +39,7 @@ export class PostsResolver {
 
   @Query(() => [Post], { name: 'postsByUser' })
   findAllByUser(
-    @Args('userId', { type: () => Int }) userId: number,
+    @Args('userId', { type: () => String }) userId: string,
     @Args('paginate', { type: () => PaginateInput, nullable: true })
     paginate?: PaginateInput,
     @Args('sort', { type: () => SortPostInput, nullable: true })
@@ -49,7 +49,7 @@ export class PostsResolver {
   }
 
   @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.postsService.findOneById(id);
   }
 
@@ -61,19 +61,21 @@ export class PostsResolver {
   ) {
     const post = await this.findOne(updatePostInput.id);
     if (!post) throw new NotFoundException();
-    if (post.author.id !== user.id) throw new UnauthorizedException();
+    if (!(await user.posts.findById(post.id)))
+      throw new UnauthorizedException();
     return this.postsService.update(updatePostInput.id, updatePostInput);
   }
 
   @UseGuards(AuthenticatedGuard)
   @Mutation(() => Boolean)
   async removePost(
-    @Args('id', { type: () => Int }) id: number,
+    @Args('id', { type: () => String }) id: string,
     @GetUser() user: User,
   ) {
     const post = await this.postsService.findOneById(id);
     if (!post) throw new NotFoundException();
-    if (post.author.id !== user.id) throw new UnauthorizedException();
+    if (!(await user.posts.findById(post.id)))
+      throw new UnauthorizedException();
     return this.postsService.remove(id);
   }
 }
