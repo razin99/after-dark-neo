@@ -1,7 +1,7 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum SortEnum {
-  ASCENDING = 'ASC',
-  DESCENDING = 'DESC',
+  ASCENDING = 'asc',
+  DESCENDING = 'desc',
 }
 registerEnumType(SortEnum, { name: 'SortEnum' });
