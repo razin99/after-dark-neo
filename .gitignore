@@ -20,8 +20,9 @@ documentation
 # Env files
 .env*
 
-# gcloud yaml
+# gcloud
 app.yaml
+firestore-service-account.json
 
 # OS
 .DS_Store
