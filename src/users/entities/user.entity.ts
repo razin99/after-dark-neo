@@ -1,8 +1,7 @@
-import { Timestamp } from '@google-cloud/firestore';
+import { DocumentReference, Timestamp } from '@google-cloud/firestore';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
-import { Collection, ISubCollection, SubCollection } from 'fireorm';
-import { Post } from 'src/posts/entities/post.entity';
+import { Collection } from 'fireorm';
 
 @ObjectType()
 @Collection()
@@ -18,10 +17,8 @@ export class User {
   @Exclude({ toPlainOnly: true })
   public password: string;
 
-  @SubCollection(Post)
-  @Field(() => [Post], { nullable: true })
   @Exclude()
-  posts?: ISubCollection<Post>;
+  posts?: DocumentReference[];
 
   @Field(() => Date)
   created_at: Timestamp;
