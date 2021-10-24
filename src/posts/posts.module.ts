@@ -4,8 +4,7 @@ import { PostsResolver } from './posts.resolver';
 import { Post } from './entities/post.entity';
 import { getRepository } from 'fireorm';
 import { DatabaseModule, FIRESTORE } from 'src/database/database.module';
-
-export const POST = 'POST-REPOSITORY';
+import { PostRepo } from './posts.symbol';
 
 @Module({
   imports: [DatabaseModule],
@@ -13,7 +12,7 @@ export const POST = 'POST-REPOSITORY';
     PostsResolver,
     PostsService,
     {
-      provide: POST,
+      provide: PostRepo,
       inject: [FIRESTORE],
       useFactory: () => getRepository(Post),
     },
