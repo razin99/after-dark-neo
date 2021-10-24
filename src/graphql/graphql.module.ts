@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError } from 'graphql';
 import { join } from 'path';
+import { ApiConfigModule } from 'src/api-config/api-config.module';
+import { ApiConfigService } from 'src/api-config/api-config.service';
 
 /**
  * Format GQL errors
@@ -18,13 +19,13 @@ const graphQLFormattedErr = (error: GraphQLError) => ({
 @Module({
   imports: [
     GraphQLModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (conf: ConfigService) => ({
-        debug: conf.get('NODE_ENV') === 'development',
-        playground: conf.get('NODE_ENV') === 'development',
+      imports: [ApiConfigModule],
+      inject: [ApiConfigService],
+      useFactory: (conf: ApiConfigService) => ({
+        debug: conf.NODE_ENV === 'development',
+        playground: conf.NODE_ENV === 'development',
         autoSchemaFile:
-          conf.get('NODE_ENV') === 'development'
+          conf.NODE_ENV === 'development'
             ? join(process.cwd(), 'src/schema.gql')
             : true,
         formatError: graphQLFormattedErr,
