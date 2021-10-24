@@ -50,7 +50,15 @@ export class AuthController {
   @UseGuards(UserExistGuard)
   @Post('register')
   async register(@Body() create: CreateUserInput) {
-    return this.authService.register(create);
+    const user = await this.authService.register(create);
+    const { posts, password, created_at, ...rest } = user;
+    return {
+      ...rest,
+      created_at: created_at.toDate(),
+    };
+    // No idea why fireorm is not returning an instance,
+    // instead it returns an 'object' (json)
+    // So, gotta do a bit of a manual serialization
   }
 
   /**
