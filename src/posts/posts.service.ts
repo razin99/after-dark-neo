@@ -8,11 +8,12 @@ import { SortPostInput } from './dto/sort-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
 import * as admin from 'firebase-admin';
+import { POST } from './posts.module';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @Inject('POST')
+    @Inject(POST)
     private postsRepository: BaseFirestoreRepository<Post>,
   ) {}
 

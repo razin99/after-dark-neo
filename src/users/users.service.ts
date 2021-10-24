@@ -6,11 +6,12 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { BaseFirestoreRepository } from 'fireorm';
 import { Timestamp } from '@google-cloud/firestore';
+import { USER } from './users.module';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @Inject('USER')
+    @Inject(USER)
     private usersRepository: BaseFirestoreRepository<User>,
   ) {}
 
