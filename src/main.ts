@@ -4,15 +4,15 @@ import { AppModule } from './app.module';
 import { classValidatorMessage } from './pipes/validate.factory';
 import * as session from 'express-session';
 import * as passport from 'passport';
-import { ConfigService } from '@nestjs/config';
 import { createClient } from 'redis';
 import * as createRedisStore from 'connect-redis';
 import { FirestoreStore } from '@google-cloud/connect-firestore';
 import { Firestore } from '@google-cloud/firestore';
+import { ApiConfigService } from './api-config/api-config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const conf = app.get(ConfigService);
+  const conf = app.get(ApiConfigService);
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -22,20 +22,20 @@ async function bootstrap() {
   );
 
   const sessionOpts: session.SessionOptions = {
-    secret: conf.get('SESSION_SECRET'),
+    secret: conf.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000,
-      secure: conf.get('NODE_ENV') === 'production',
+      secure: conf.NODE_ENV === 'production',
     },
   };
 
-  if (conf.get('NODE_ENV') === 'development') {
+  if (conf.NODE_ENV === 'development') {
     const RedisStore = createRedisStore(session);
     const redisClient = createClient({
-      host: conf.get('REDIS_HOST'),
-      port: conf.get('REDIS_PORT'),
+      host: conf.REDIS_HOST,
+      port: conf.REDIS_PORT,
     });
     sessionOpts.store = new RedisStore({ client: redisClient });
   } else {
@@ -48,9 +48,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  console.log(
-    `Serving app at: ${conf.get('BACKEND_HOST')}:${conf.get('BACKEND_PORT')}`,
-  );
-  await app.listen(process.env.PORT || conf.get('BACKEND_PORT'));
+  console.log(`Serving app at: ${conf.BACKEND_HOST}:${conf.BACKEND_PORT}`);
+  await app.listen(process.env.PORT || conf.BACKEND_PORT);
 }
 bootstrap();
