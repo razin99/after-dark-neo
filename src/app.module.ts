@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { PostsModule } from './posts/posts.module';
 import { ConfigModule } from '@nestjs/config';
+import { ApiConfigModule } from './api-config/api-config.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -36,6 +37,7 @@ import * as Joi from 'joi';
         abortEarly: true,
       },
     }),
+    ApiConfigModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService],
