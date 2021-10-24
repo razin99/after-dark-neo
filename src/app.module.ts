@@ -19,16 +19,16 @@ import * as Joi from 'joi';
     PostsModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
-        POSTGRES_USER: Joi.string().required(),
-        POSTGRES_PASSWORD: Joi.string().required(),
-        POSTGRES_PORT: Joi.number().required(),
-        POSTGRES_HOST: Joi.string().required(),
         NODE_ENV: Joi.string()
           .valid('development', 'production')
           .default('development'),
+        FIRESTORE_HOST: Joi.string().required(),
+        FIRESTORE_PORT: Joi.number().required(),
         REDIS_HOST: Joi.string().required(),
         REDIS_PORT: Joi.number().required(),
         SESSION_SECRET: Joi.string().required(),
+        SERVICE_KEY: Joi.string().required(),
+        PROJECT_ID: Joi.string().required(),
         BACKEND_HOST: Joi.string().required(),
         BACKEND_PORT: Joi.number().required(),
       }),
