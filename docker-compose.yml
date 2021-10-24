@@ -1,23 +1,18 @@
 version: '3'
 services:
-  ev_db:
-    container_name: ev-dim
-    image: postgres:alpine
+  firestore:
+    container_name: firestore
+    image: mtlynch/firestore-emulator
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=afterdark
+      - FIRESTORE_PROJECT_ID=${PROJECT_ID}
+      - PORT=${FIRESTORE_PORT}
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+      - '${FIRESTORE_PORT}:${FIRESTORE_PORT}'
     mem_limit: 500M
-    volumes:
-      - after-dark-db:/var/lib/postgresql/data
   redis:
     container_name: redis
     image: 'redis:alpine'
     ports:
       - '${REDIS_PORT}:${REDIS_PORT}'
+    mem_limit: 500M
 
-volumes:
-  after-dark-db:
-    external: false
