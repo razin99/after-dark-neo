@@ -4,8 +4,10 @@ import { Collection } from 'fireorm';
 import { User } from 'src/users/entities/user.entity';
 
 @ObjectType()
-@Collection()
+@Collection(Post.collection)
 export class Post {
+  static collection = 'posts';
+
   @Field(() => String)
   id: string;
 

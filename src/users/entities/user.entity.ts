@@ -4,22 +4,24 @@ import { Exclude } from 'class-transformer';
 import { Collection } from 'fireorm';
 
 @ObjectType()
-@Collection()
+@Collection(User.collection)
 export class User {
-  @Field(() => String)
-  public id: string;
-
-  public email: string;
+  static collection = 'users';
 
   @Field(() => String)
-  public username: string;
+  id: string;
 
-  @Exclude({ toPlainOnly: true })
-  public password: string;
-
-  @Exclude()
-  posts?: DocumentReference[];
+  @Field(() => String)
+  username: string;
 
   @Field(() => Date)
   created_at: Timestamp;
+
+  email: string;
+
+  @Exclude({ toPlainOnly: true })
+  password: string;
+
+  @Exclude()
+  posts?: DocumentReference[];
 }
