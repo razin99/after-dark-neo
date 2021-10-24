@@ -1,12 +1,13 @@
 import { Timestamp } from '@google-cloud/firestore';
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseFirestoreRepository } from 'fireorm';
+import { BaseFirestoreRepository, getRepository } from 'fireorm';
 import { PaginateInput } from 'src/dto/paginate.input';
 import { User } from 'src/users/entities/user.entity';
 import { CreatePostInput } from './dto/create-post.input';
 import { SortPostInput } from './dto/sort-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class PostsService {
@@ -15,13 +16,24 @@ export class PostsService {
     private postsRepository: BaseFirestoreRepository<Post>,
   ) {}
 
-  create(createPostInput: CreatePostInput, user: User) {
+  private db = admin.firestore();
+  private usersRepository = getRepository(User);
+
+  async create(createPostInput: CreatePostInput, user: User) {
     const current_time = Timestamp.now();
-    return user.posts.create({
+    const post = await this.postsRepository.create({
       ...createPostInput,
       created_at: current_time,
       updated_at: current_time,
+      author: this.db.doc(`Users/${user.id}`),
     });
+    if (!user?.posts) {
+      user.posts = [this.db.doc(`Posts/${post.id}`)];
+    } else {
+      user.posts.push(this.db.doc(`Posts/${post.id}`));
+    }
+    await this.usersRepository.update(user);
+    return post;
   }
 
   findAll(paginate?: PaginateInput, sort?: SortPostInput) {
