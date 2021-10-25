@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { PaginateInput } from 'src/dto/paginate.input';
 import { SortUserInput } from './dto/sort-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { BaseFirestoreRepository } from 'fireorm';
-import { Timestamp } from '@google-cloud/firestore';
 import { UserRepo } from './users.symbol';
+import { Inject, Injectable } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -20,12 +20,13 @@ export class UsersService {
    * @param createUserInput required information to create a user
    * @returns the created user on success
    */
-  create(createUserInput: CreateUserInput): Promise<User> {
-    const created_at = Timestamp.now();
-    return this.usersRepository.create({
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    const created_at = new Date();
+    const user = await this.usersRepository.create({
       ...createUserInput,
       created_at,
     });
+    return plainToClass(User, user);
   }
 
   /**
@@ -34,7 +35,8 @@ export class UsersService {
    * @returns user on success
    */
   async findOneById(id: string): Promise<User> {
-    return this.usersRepository.findById(id);
+    const user = await this.usersRepository.findById(id);
+    return plainToClass(User, user);
   }
 
   /**
@@ -42,8 +44,11 @@ export class UsersService {
    * @param email to lookup
    * @returns user on success
    */
-  findOneByEmail(email: string): Promise<User> {
-    return this.usersRepository.whereEqualTo('email', email).findOne();
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository
+      .whereEqualTo('email', email)
+      .findOne();
+    return plainToClass(User, user);
   }
 
   /**
@@ -51,16 +56,22 @@ export class UsersService {
    * @param username to lookup
    * @returns user on success
    */
-  findOneByUsername(username: string): Promise<User> {
-    return this.usersRepository.whereEqualTo('username', username).findOne();
+  async findOneByUsername(username: string): Promise<User> {
+    const user = await this.usersRepository
+      .whereEqualTo('username', username)
+      .findOne();
+    return plainToClass(User, user);
   }
 
   /**
    * Get all users
    * @returns all users exists
    */
-  findAll(paginate?: PaginateInput, sort?: SortUserInput): Promise<User[]> {
-    return this.usersRepository
+  async findAll(
+    paginate?: PaginateInput,
+    sort?: SortUserInput,
+  ): Promise<User[]> {
+    const users = await this.usersRepository
       .customQuery(async (query, _) => {
         let q = query;
         if (sort?.joinDate) q = q.orderBy('created_at', sort.joinDate);
@@ -70,6 +81,7 @@ export class UsersService {
         return q;
       })
       .find();
+    return plainToClass(User, users);
   }
 
   /**
@@ -90,9 +102,10 @@ export class UsersService {
    */
   async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
     const user = await this.findOneById(id);
-    return this.usersRepository.update({
+    const updated = await this.usersRepository.update({
       ...user,
       ...updateUserInput,
     });
+    return plainToClass(User, updated);
   }
 }
