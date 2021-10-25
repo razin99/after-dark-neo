@@ -1,0 +1,13 @@
+FIRESTORE_HOST=localhost
+FIRESTORE_PORT=8200
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+SESSION_SECRET=shh_dont_tell_anyone
+
+SERVICE_KEY=location_to_firestore-service-account.json
+PROJECT_ID=google_cloud_project_id_here
+
+BACKEND_HOST=localhost
+BACKEND_PORT=3000
