@@ -6,7 +6,14 @@ same way.
 
 ## Description
 
-A simple 'confessions' site's backend.
+A simple twitter like(?) site's backend. You can post something, and that's it.
+
+Uses firestore to store data and session. Initially uses postgres for data and
+redis for session storage, but I decided that its a bit expensive (not free) to
+run on google cloud.
+
+`auth` calls are through normal RESTful endpoints, everything else goes through
+graphql.
 
 Built with [Nest](https://github.com/nestjs/nest)
 
@@ -16,9 +23,8 @@ Built with [Nest](https://github.com/nestjs/nest)
 $ npm install
 ```
 
-- Ensure that database is up and running (refer `docker-compose.yml`)
-- Use environment variables in production instead of hardcoded user and
-  password for postgres
+- When running locally, ensure that firestore and redis is running:
+  `docker-compose up`
 
 ## Running the app
 
@@ -34,7 +40,8 @@ $ npm run start:prod
 ```
 
 ## Test
-
+Test coverage is still bad, to the point that its almost pointless running
+these
 ```bash
 # unit tests
 $ npm run test
