@@ -1,6 +1,6 @@
 import { Timestamp } from '@google-cloud/firestore';
 import { Inject, Injectable } from '@nestjs/common';
-import { BaseFirestoreRepository, getRepository } from 'fireorm';
+import { BaseFirestoreRepository } from 'fireorm';
 import { PaginateInput } from 'src/dto/paginate.input';
 import { User } from 'src/users/entities/user.entity';
 import { CreatePostInput } from './dto/create-post.input';
@@ -9,16 +9,19 @@ import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
 import * as admin from 'firebase-admin';
 import { PostRepo } from './posts.symbol';
+import { FIRESTORE } from 'src/database/database.module';
+import { UserRepo } from 'src/users/users.symbol';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class PostsService {
   constructor(
     @Inject(PostRepo)
     private postsRepository: BaseFirestoreRepository<Post>,
+    @Inject(UserRepo)
+    private usersRepository: BaseFirestoreRepository<User>,
+    @Inject(FIRESTORE) private db: admin.firestore.Firestore,
   ) {}
-
-  private db = admin.firestore();
-  private usersRepository = getRepository(User);
 
   async create(createPostInput: CreatePostInput, user: User) {
     const current_time = Timestamp.now();
