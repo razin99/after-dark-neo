@@ -92,6 +92,6 @@ export class PostsResolver {
     if (!post) throw new NotFoundException();
     const author = (await post.author.get()).data();
     if (user.id !== author.id) throw new UnauthorizedException();
-    return this.postsService.remove(id);
+    return this.postsService.remove(id, user.id);
   }
 }
