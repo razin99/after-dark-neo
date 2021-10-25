@@ -28,62 +28,69 @@ export class PostsService {
       ...createPostInput,
       created_at: current_time,
       updated_at: current_time,
-      author: this.db.doc(`Users/${user.id}`),
+      author: this.getDocRef(User, user),
     });
-    if (!user?.posts) {
-      user.posts = [this.db.doc(`Posts/${post.id}`)];
-    } else {
-      user.posts.push(this.db.doc(`Posts/${post.id}`));
-    }
+    const postRef = this.getDocRef(Post, post);
+    user.posts ? user.posts.push(postRef) : (user.posts = [postRef]);
     await this.usersRepository.update(user);
-    return post;
+    return plainToClass(Post, post);
   }
 
-  findAll(paginate?: PaginateInput, sort?: SortPostInput) {
-    return this.postsRepository
+  async findAll(paginate?: PaginateInput, sort?: SortPostInput) {
+    const posts = await this.postsRepository
       .customQuery(async (query, _) => {
-        let q = query;
-        if (sort?.created_at) q = q.orderBy('created_at', sort.created_at);
-        if (sort?.updated_at) q = q.orderBy('username', sort.updated_at);
-        if (paginate?.skip) q = q.offset(paginate.skip);
-        if (paginate?.take) q = q.limit(paginate.take);
-        return q;
+        return this.paginateSortQueryFactory(query, paginate, sort);
       })
       .find();
+    return plainToClass(Post, posts);
   }
 
-  findAllByUser(
+  async findAllByUser(
     userId: string,
     paginate?: PaginateInput,
     sort?: SortPostInput,
   ) {
-    return this.postsRepository
-      .customQuery(async (query, ref) => {
+    const posts = await this.postsRepository
+      .customQuery(async (query, _) => {
         let q = query;
-        q.where(ref.parent.id, '==', userId);
-        if (sort?.created_at) q = q.orderBy('created_at', sort.created_at);
-        if (sort?.updated_at) q = q.orderBy('username', sort.updated_at);
-        if (paginate?.skip) q = q.offset(paginate.skip);
-        if (paginate?.take) q = q.limit(paginate.take);
-        return q;
+        q = q.where('author', '==', userId);
+        return this.paginateSortQueryFactory(q, paginate, sort);
       })
       .find();
+    return plainToClass(Post, posts);
   }
 
-  findOneById(id: string) {
-    return this.postsRepository.findById(id);
+  async findOneById(id: string) {
+    const post = await this.postsRepository.findById(id);
+    return plainToClass(Post, post);
   }
 
   async update(id: string, updatePostInput: UpdatePostInput) {
     const post = await this.findOneById(id);
-    return this.postsRepository.update({
+    const updated = await this.postsRepository.update({
       ...post,
       ...updatePostInput,
       updated_at: new Date(),
     });
+    return plainToClass(Post, updated);
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    // id not found
+    if (!(await this.postsRepository.findById(id))) return false;
+
+    // user id not found
+    const user = await this.usersRepository.findById(userId);
+    if (!user) return false;
+
+    // remove reference in user and save user
+    const postIdx = user.posts.indexOf(this.getDocRef(Post, { id }));
+    if (postIdx !== -1) {
+      user.posts.splice(postIdx);
+      await this.usersRepository.update(user);
+    }
+
+    // delete actual post
     await this.postsRepository.delete(id);
     return !(await this.postsRepository.findById(id));
   }
