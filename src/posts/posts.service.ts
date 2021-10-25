@@ -87,4 +87,21 @@ export class PostsService {
     await this.postsRepository.delete(id);
     return !(await this.postsRepository.findById(id));
   }
+
+  private paginateSortQueryFactory(
+    query: admin.firestore.Query,
+    paginate: PaginateInput,
+    sort: SortPostInput,
+  ): admin.firestore.Query {
+    let q = query;
+    if (sort?.created_at) q = q.orderBy('created_at', sort.created_at);
+    if (sort?.updated_at) q = q.orderBy('username', sort.updated_at);
+    if (paginate?.skip) q = q.offset(paginate.skip);
+    if (paginate?.take) q = q.limit(paginate.take);
+    return q;
+  }
+
+  private getDocRef(klass: { collection: string }, instance: { id: string }) {
+    return this.db.doc(`${klass.collection}/${instance.id}`);
+  }
 }
