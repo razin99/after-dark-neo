@@ -1,4 +1,3 @@
-import { Timestamp } from '@google-cloud/firestore';
 import { Inject, Injectable } from '@nestjs/common';
 import { BaseFirestoreRepository } from 'fireorm';
 import { PaginateInput } from 'src/dto/paginate.input';
@@ -24,7 +23,7 @@ export class PostsService {
   ) {}
 
   async create(createPostInput: CreatePostInput, user: User) {
-    const current_time = Timestamp.now();
+    const current_time = new Date();
     const post = await this.postsRepository.create({
       ...createPostInput,
       created_at: current_time,
@@ -80,6 +79,7 @@ export class PostsService {
     return this.postsRepository.update({
       ...post,
       ...updatePostInput,
+      updated_at: new Date(),
     });
   }
 
