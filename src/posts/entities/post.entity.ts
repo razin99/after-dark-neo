@@ -1,4 +1,4 @@
-import { DocumentReference, Timestamp } from '@google-cloud/firestore';
+import { DocumentReference } from '@google-cloud/firestore';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Collection } from 'fireorm';
 import { User } from 'src/users/entities/user.entity';
@@ -15,10 +15,10 @@ export class Post {
   body: string;
 
   @Field(() => Date)
-  created_at: Timestamp;
+  created_at: Date;
 
   @Field(() => Date)
-  updated_at: Timestamp;
+  updated_at: Date;
 
   @Field(() => User)
   author: DocumentReference;
