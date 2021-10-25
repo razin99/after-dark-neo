@@ -15,7 +15,7 @@ export class User {
   username: string;
 
   @Field(() => Date)
-  created_at: Timestamp;
+  created_at: Date;
 
   email: string;
 
