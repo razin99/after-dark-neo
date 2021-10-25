@@ -1,4 +1,4 @@
-import { DocumentReference, Timestamp } from '@google-cloud/firestore';
+import { DocumentReference } from '@google-cloud/firestore';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
 import { Collection } from 'fireorm';
