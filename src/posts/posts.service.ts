@@ -33,7 +33,7 @@ export class PostsService {
     const postRef = this.getDocRef(Post, post);
     user.posts ? user.posts.push(postRef) : (user.posts = [postRef]);
     await this.usersRepository.update(user);
-    return plainToClass(Post, post);
+    return plainToClass(Post, await this.postsRepository.findById(post.id));
   }
 
   async findAll(paginate?: PaginateInput, sort?: SortPostInput) {
